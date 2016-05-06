@@ -1,6 +1,7 @@
+print(arg[1])
 started = 0
 our_id = 0
-print(arg[1])
+
 function vardump(value, depth, key)
   local linePrefix = ""
   local spaces = ""

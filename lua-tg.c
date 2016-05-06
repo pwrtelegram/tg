@@ -1911,7 +1911,7 @@ static int register_interface_from_lua (lua_State *L) {
 }
 
 
-void lua_init (const char *file) {
+void lua_init (const char *file, const char *param) {
   if (!file) { return; }
   have_file = 1;
   luaState = luaL_newstate ();
@@ -1926,15 +1926,28 @@ void lua_init (const char *file) {
   lua_register (luaState, "postpone", postpone_from_lua);
   lua_register (luaState, "safe_quit", safe_quit_from_lua);
   lua_register (luaState, "register_interface_function", register_interface_from_lua);
+    lua_createtable(luaState, 2, 0);
+    lua_pushnumber(luaState, 1);
+    lua_pushstring(luaState, param);
+    lua_settable(luaState, -3);
+    lua_setglobal(luaState, "arg");
 
   print_start ();
-  int r = luaL_dofile (luaState, file);
-  print_end ();
+  int r = luaL_loadfile (luaState, file);
 
   if (r) {
     logprintf ("lua: %s\n",  lua_tostring (luaState, -1));
     exit (1);
   }
+
+  int lr = lua_pcall (luaState, 0, LUA_MULTRET, 0);
+  if (lr) {
+    logprintf ("lua:cx %s\n",  lua_tostring (luaState, -1));
+    exit (1);
+  }
+  print_end ();
+
+
 }
 
 #endif

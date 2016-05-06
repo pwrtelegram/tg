@@ -102,6 +102,7 @@ char *downloads_directory;
 char *config_directory;
 char *binlog_file_name;
 char *lua_file;
+char *lua_param;
 char *python_file;
 int binlog_enabled;
 extern int log_level;
@@ -622,6 +623,7 @@ void args_parse (int argc, char **argv) {
     {"allow-weak-random", no_argument, 0, 'w'},
 #ifdef USE_LUA
     {"lua-script", required_argument, 0, 's'},
+    {"lua-param", required_argument, 0, 'K'},
 #endif
     {"wait-dialog-list", no_argument, 0, 'W'},
     {"disable-colors", no_argument, 0, 'C'},
@@ -726,6 +728,9 @@ void args_parse (int argc, char **argv) {
 #ifdef USE_LUA
     case 's':
       lua_file = strdup (optarg);
+      break;
+    case 'K':
+      lua_param = strdup (optarg);
       break;
 #endif
     case 'W':
@@ -1003,7 +1008,7 @@ int main (int argc, char **argv) {
 
   #ifdef USE_LUA
   if (lua_file) {
-    lua_init (lua_file);
+    lua_init (lua_file, lua_param);
   }
   #endif
   #ifdef USE_PYTHON
