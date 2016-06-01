@@ -466,6 +466,7 @@ void usage (void) {
   printf ("  --disable-auto-accept/-E             disable auto accept of encrypted chats\n");
   #ifdef USE_LUA
   printf ("  --lua-script/-s                      lua script file\n");
+  printf ("  --lua-param <param>                  parameter to pass to lua script file\n");
   #endif
   printf ("  --wait-dialog-list/-W                send dialog_list query and wait for answer before reading input\n");
   printf ("  --disable-colors/-C                  disable color output\n");
