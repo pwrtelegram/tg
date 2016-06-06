@@ -641,7 +641,7 @@ void args_parse (int argc, char **argv) {
     {"exec", required_argument, 0, 'e'},
     {"disable-names", no_argument, 0, 'I'},
     {"enable-ipv6", no_argument, 0, '6'},
-    {"bot", optional_argument, 0, 'b'},
+    {"bot", required_argument, 0, 'b'},
     {"help", no_argument, 0, 'h'},
     {"accept-any-tcp", no_argument, 0,  1001},
     {"disable-link-preview", no_argument, 0, 1002},
@@ -675,9 +675,7 @@ void args_parse (int argc, char **argv) {
     switch (opt) {
     case 'b':
       bot_mode ++;
-      if (optarg) {
-        bot_hash = optarg;
-      }
+      bot_hash = optarg;
       break;
     case 1000:
       tgl_allocator = &tgl_allocator_debug;

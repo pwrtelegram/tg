@@ -219,7 +219,7 @@ void generate_prompt (enum tgl_value_type type, int num) {
   case tgl_bot_hash:
     one_string_flags = 0;
     assert (!num);
-    one_string_prompt = tstrdup ("hash: ");
+    one_string_prompt = bot_hash;
     return;
   default:
     assert (0);
@@ -237,6 +237,7 @@ void do_get_string (struct tgl_state *TLS) {
 
 void do_get_values (struct tgl_state *TLS, enum tgl_value_type type, const char *prompt, int num_values,
           void (*callback)(struct tgl_state *TLS, const char *string[], void *arg), void *arg) {
+  printf("%s", bot_hash);
   if (type == tgl_bot_hash && bot_hash) {
     assert (num_values == 1);
     one_string_results[0] = bot_hash;
