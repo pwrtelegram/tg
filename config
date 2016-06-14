@@ -1,0 +1,5 @@
+# This is an empty config file
+# Feel free to put something here
+auth_file = "/dev/null";
+state_file = "/dev/null";
+secret = "/dev/null";
