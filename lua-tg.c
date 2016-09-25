@@ -674,10 +674,12 @@ enum lua_query_type {
   lq_send_typing_abort,
   lq_rename_chat,
   lq_send_photo,
+  lq_reply_photo,
   lq_chat_set_photo,
   lq_set_profile_photo,
   lq_set_profile_name,
   lq_send_video,
+  lq_reply_video,
   lq_send_text,
   lq_reply,
   lq_fwd,
@@ -700,7 +702,9 @@ enum lua_query_type {
   lq_create_secret_chat,
   lq_create_group_chat,
   lq_send_audio,
+  lq_reply_audio,
   lq_send_document,
+  lq_reply_document,
   lq_send_file,
   lq_load_audio,
   lq_load_document,
@@ -1180,16 +1184,36 @@ void lua_do_all (void) {
       tgl_do_send_document (TLS, lua_ptr[p + 1].peer_id, lua_ptr[p + 2].str, NULL, 0, TGL_SEND_MSG_FLAG_DOCUMENT_PHOTO, lua_msg_cb, lua_ptr[p].ptr);
       p += 3;
       break;
+    case lq_reply_photo:
+      tgl_do_reply_document (TLS, &lua_ptr[p + 1].msg_id, lua_ptr[p + 2].str, NULL, 0, TGL_SEND_MSG_FLAG_DOCUMENT_PHOTO, lua_msg_cb, lua_ptr[p].ptr);
+      p += 3;
+      break;
     case lq_send_video:
       tgl_do_send_document (TLS, lua_ptr[p + 1].peer_id, lua_ptr[p + 2].str, NULL, 0, TGL_SEND_MSG_FLAG_DOCUMENT_VIDEO, lua_msg_cb, lua_ptr[p].ptr);
+      p += 3;
+      break;
+    case lq_reply_video:
+      tgl_do_reply_document (TLS, &lua_ptr[p + 1].msg_id, lua_ptr[p + 2].str, NULL, 0, TGL_SEND_MSG_FLAG_DOCUMENT_VIDEO, lua_msg_cb, lua_ptr[p].ptr);
       p += 3;
       break;
     case lq_send_audio:
       tgl_do_send_document (TLS, lua_ptr[p + 1].peer_id, lua_ptr[p + 2].str, NULL, 0, TGL_SEND_MSG_FLAG_DOCUMENT_AUDIO, lua_msg_cb, lua_ptr[p].ptr);
       p += 3;
       break;
+    case lq_reply_audio:
+      tgl_do_reply_document (TLS, &lua_ptr[p + 1].msg_id, lua_ptr[p + 2].str, NULL, 0, TGL_SEND_MSG_FLAG_DOCUMENT_AUDIO, lua_msg_cb, lua_ptr[p].ptr);
+      p += 3;
+      break;
     case lq_send_document:
       tgl_do_send_document (TLS, lua_ptr[p + 1].peer_id, lua_ptr[p + 2].str, NULL, 0, 0, lua_msg_cb, lua_ptr[p].ptr);
+      p += 3;
+      break;
+    case lq_reply_document:
+      tgl_do_reply_document (TLS, &lua_ptr[p + 1].msg_id, lua_ptr[p + 2].str, NULL, 0, 0, lua_msg_cb, lua_ptr[p].ptr);
+      p += 3;
+      break;
+    case lq_reply:
+      tgl_do_reply_message (TLS, &lua_ptr[p + 1].msg_id, LUA_STR_ARG (p + 2), 0, lua_msg_cb, lua_ptr[p].ptr);
       p += 3;
       break;
     case lq_send_file:
@@ -1239,10 +1263,6 @@ void lua_do_all (void) {
         tgl_do_load_document_thumb (TLS, M->media.document, lua_file_cb, lua_ptr[p].ptr);
       }
       p += 2;
-      break;
-    case lq_reply:
-      tgl_do_reply_message (TLS, &lua_ptr[p + 1].msg_id, LUA_STR_ARG (p + 2), 0, lua_msg_cb, lua_ptr[p].ptr);
-      p += 3;
       break;
     case lq_fwd:
       tmp_msg_id = &lua_ptr[p + 2].msg_id;
@@ -1429,9 +1449,13 @@ struct lua_function functions[] = {
   {"send_typing", lq_send_typing, { lfp_peer, lfp_none }},
   {"send_typing_abort", lq_send_typing_abort, { lfp_peer, lfp_none }},
   {"send_photo", lq_send_photo, { lfp_peer, lfp_string, lfp_none }},
+  {"reply_photo", lq_reply_photo, { lfp_msg, lfp_string, lfp_none }},
   {"send_video", lq_send_video, { lfp_peer, lfp_string, lfp_none }},
+  {"reply_video", lq_reply_video, { lfp_msg, lfp_string, lfp_none }},
   {"send_audio", lq_send_audio, { lfp_peer, lfp_string, lfp_none }},
+  {"reply_audio", lq_reply_audio, { lfp_msg, lfp_string, lfp_none }},
   {"send_document", lq_send_document, { lfp_peer, lfp_string, lfp_none }},
+  {"reply_document", lq_reply_document, { lfp_msg, lfp_string, lfp_none }},
   {"send_file", lq_send_file, { lfp_peer, lfp_string, lfp_none }},
   {"send_text", lq_send_text, { lfp_peer, lfp_string, lfp_none }},
   {"chat_set_photo", lq_chat_set_photo, { lfp_chat, lfp_string, lfp_none }},
